@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../models/character.dart';
 
 class AddCharacterScreen extends StatelessWidget {
   final TextEditingController nameController = TextEditingController();
@@ -17,12 +18,12 @@ class AddCharacterScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              controller: nameController, // Associe o controlador ao campo
+              controller: nameController,
               decoration: InputDecoration(labelText: 'Name'),
             ),
             SizedBox(height: 16),
             TextField(
-              controller: fromWhereController, // Associe o controlador ao campo
+              controller: fromWhereController,
               decoration: InputDecoration(labelText: 'From Where'),
             ),
             SizedBox(height: 16),
@@ -41,7 +42,11 @@ class AddCharacterScreen extends StatelessWidget {
                 );
 
                 if (response.statusCode == 201) {
-                  Navigator.pop(context); // Volta para a lista de personagens
+                  Navigator.pop(context, Character(
+                    id: '', // Gere um ID adequado
+                    name: newName,
+                    fromWhere: newFromWhere,
+                  ));
                 } else {
                   // Lógica para lidar com erro
                 }
@@ -54,4 +59,3 @@ class AddCharacterScreen extends StatelessWidget {
     );
   }
 }
-

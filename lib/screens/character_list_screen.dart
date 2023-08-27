@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import '../models/character.dart';
 import 'add_character_screen.dart';
+import 'character_details_screen.dart';
 
 class CharacterListScreen extends StatefulWidget {
   @override
@@ -45,15 +46,29 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
           return ListTile(
             title: Text(character.name),
             subtitle: Text(character.fromWhere),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CharacterDetailsScreen(character.id),
+                ),
+              );
+            },
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          final newCharacter = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AddCharacterScreen()),
           );
+
+          if (newCharacter != null) {
+            setState(() {
+              characters.add(newCharacter);
+            });
+          }
         },
         child: Icon(Icons.add),
       ),
