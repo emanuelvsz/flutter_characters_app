@@ -12,6 +12,7 @@ class CharacterListScreen extends StatefulWidget {
 
 class _CharacterListScreenState extends State<CharacterListScreen> {
   List<Character> characters = [];
+  int currentPage = 1;
 
   @override
   void initState() {
@@ -20,57 +21,43 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
   }
 
   Future<void> fetchCharacters() async {
-    final response = await http.get(Uri.parse('http://localhost:5010/characters'));
+    final response = await http.get(Uri.parse('http://localhost:5010/characters?page=$currentPage'));
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       setState(() {
-        characters = data.map((characterData) {
+        characters.addAll(data.map((characterData) {
           return Character(
             id: characterData['id'],
             name: characterData['name'],
             fromWhere: characterData['from_where'],
           );
-        }).toList();
+        }));
       });
     }
+  }
+
+  void loadMoreCharacters() {
+    setState(() {
+      currentPage++;
+    });
+    fetchCharacters();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Character List')),
-      body: ListView.builder(
-        itemCount: characters.length,
-        itemBuilder: (context, index) {
-          final character = characters[index];
-          return ListTile(
+      body: ListView(
+        children: [
+          ...characters.map((character) => ListTile(
             title: Text(character.name),
             subtitle: Text(character.fromWhere),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CharacterDetailsScreen(character.id),
-                ),
-              );
-            },
-          );
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final newCharacter = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AddCharacterScreen()),
-          );
-
-          if (newCharacter != null) {
-            setState(() {
-              characters.add(newCharacter);
-            });
-          }
-        },
-        child: Icon(Icons.add),
+          )),
+          ElevatedButton(
+            onPressed: loadMoreCharacters,
+            child: Text('Mostrar Mais'),
+          ),
+        ],
       ),
     );
   }
