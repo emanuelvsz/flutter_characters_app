@@ -42,11 +42,7 @@ class AddCharacterScreen extends StatelessWidget {
                 );
 
                 if (response.statusCode == 201) {
-                  Navigator.pop(context, Character(
-                    id: '', // Gere um ID adequado
-                    name: newName,
-                    fromWhere: newFromWhere,
-                  ));
+                  Navigator.pop(context, true); // Retorna true para indicar sucesso
                 } else {
                   // Lógica para lidar com erro
                 }

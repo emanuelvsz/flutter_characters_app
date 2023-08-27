@@ -43,6 +43,28 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
     fetchCharacters();
   }
 
+  Future<void> addCharacter() async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => AddCharacterScreen()),
+    );
+
+    if (result == true) {
+      setState(() {
+        characters.clear();
+        currentPage = 1;
+        fetchCharacters();
+      });
+    }
+  }
+
+  void viewCharacterDetails(Character character) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CharacterDetailsScreen(character.id)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,12 +74,17 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
           ...characters.map((character) => ListTile(
             title: Text(character.name),
             subtitle: Text(character.fromWhere),
+            onTap: () => viewCharacterDetails(character),
           )),
           ElevatedButton(
             onPressed: loadMoreCharacters,
             child: Text('Mostrar Mais'),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: addCharacter,
+        child: Icon(Icons.add),
       ),
     );
   }
