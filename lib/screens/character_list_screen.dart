@@ -69,13 +69,57 @@ class _CharacterListScreenState extends State<CharacterListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Character List')),
-      body: ListView(
+      body: Column(
         children: [
-          ...characters.map((character) => ListTile(
-            title: Text(character.name),
-            subtitle: Text(character.fromWhere),
-            onTap: () => viewCharacterDetails(character),
-          )),
+          Expanded(
+            child: ListView.builder(
+              itemCount: characters.length,
+              itemBuilder: (context, index) {
+                final character = characters[index];
+                return InkWell(
+                  onTap: () {
+                    viewCharacterDetails(character);
+                  },
+                  child: Card(
+                    elevation: 4,
+                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(8),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                character.name,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(character.fromWhere),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
           ElevatedButton(
             onPressed: loadMoreCharacters,
             child: Text('Mostrar Mais'),

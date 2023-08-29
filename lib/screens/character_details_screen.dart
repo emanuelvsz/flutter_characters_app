@@ -38,6 +38,19 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
     }
   }
 
+  Future<void> deleteCharacter(String characterID) async {
+    final response = await http.delete(
+      Uri.parse('http://localhost:5010/characters/rm/$characterID'),
+    );
+
+    if (response.statusCode == 200) {
+      // Exclusão bem-sucedida, volte para a tela de listagem
+      Navigator.pop(context);
+    } else {
+      // Lógica para lidar com erro
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Character>(
@@ -57,7 +70,12 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen> {
                 children: [
                   Text('Name: ${character.name}'),
                   Text('From Where: ${character.fromWhere}'),
-                  // Adicione mais detalhes conforme necessário
+                  ElevatedButton(
+                    onPressed: () async {
+                      await deleteCharacter(widget.characterID);
+                    },
+                    child: Text('Excluir Personagem'),
+                  ),
                 ],
               ),
             ),
